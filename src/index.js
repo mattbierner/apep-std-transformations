@@ -4,16 +4,12 @@
 "use strict";
 const pep = require('apep');
 
-module.exports = (proto = {}) => 
-    Object.create(proto, {
-        'match': { value: match },
-        'replace': { value: replace },
-        'upper': { value: upper },
-        'lower': { value: lower },
-        'capitalize': { value: capitalize },
-        'dict': { value: dict },
-        'dicti': { value: dicti },
-    });
+const pep_trans = module.exports = (proto = {}) => 
+    Object.create(proto, Object.getOwnPropertyNames(pep_trans)
+        .reduce((p, c) => {
+            p[c] = Object.getOwnPropertyDescriptor(pep_trans, c);
+            return p;
+        }, {}));
 
 const toLowerCase = x => ('' + x).toLowerCase();
 const toUpperCase = x => ('' + x).toUpperCase();
@@ -43,7 +39,7 @@ const standardMapReplace = (whole, g1) => g1 === undefined ? whole : g1;
     If a mapping function is provided, the function is invoked with the entire
     string plus the match capture groups as arguments.
 */
-const match = module.exports.match = () => {
+pep_trans.match = () => {
     let cases = [];
     const matcher = x => {
         x = ('' + x);
@@ -72,20 +68,20 @@ const match = module.exports.match = () => {
     @param target What to replace. Passed to String.prototype.replace
     @param replacer How to replace. Passed to String.prototype.replace
 */
-const replace = module.exports.replace = (target, replacer) =>
-    match()
+pep_trans.replace = (target, replacer) =>
+    pep_trans.match()
         .case(target, x => x.replace(target, replacer));
 
 /**
     Convert the result of `g` to upper case.
 */
-const upper = module.exports.upper = (g) =>
+pep_trans.upper = (g) =>
     pep.map(g, toUpperCase);
 
 /**
     Convert the result of `g` to lower case.
 */
-const lower = module.exports.lower = (g) =>
+pep_trans.lower = (g) =>
     pep.map(g, toLowerCase);
 
 /**
@@ -99,8 +95,8 @@ const lower = module.exports.lower = (g) =>
         pep.run(capitalize(p)) === 'Ab CD Ef';
         pep.run(capitalize(pep.join(p))) === 'Ab Cd Ef';
 */
-const capitalize = module.exports.capitalize =
-    replace(/\b\w/g, toUpperCase);
+pep_trans.capitalize =
+    pep_trans.replace(/\b\w/g, toUpperCase);
 
 /**
     Case sensitive dictionary map function.
@@ -111,7 +107,7 @@ const capitalize = module.exports.capitalize =
     @param dictionary Object mapping string keys to values.
     @param def Default value returned if non match is found
 */
-const dict = module.exports.dict = (dictionary, def = '') => {
+pep_trans.dict = (dictionary, def = '') => {
     const lookup = x =>
         (dictionary.hasOwnProperty(x) ? dictionary[x] : def);
     return (g) => pep.map(g, lookup);
@@ -122,7 +118,7 @@ const dict = module.exports.dict = (dictionary, def = '') => {
     
     @see dict.
 */
-const dicti = module.exports.dicti = (dictionary, def = '') => {
+pep_trans.dicti = (dictionary, def = '') => {
     const lookupTable = Object.keys(dictionary).reduce((p, c) => {
         p[toLowerCase(c)] = dictionary[c];
         return p;

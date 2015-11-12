@@ -7,17 +7,12 @@ var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = 
 
 var pep = require('apep');
 
-module.exports = function () {
+var pep_trans = module.exports = function () {
     var proto = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    return Object.create(proto, {
-        'match': { value: match },
-        'replace': { value: replace },
-        'upper': { value: upper },
-        'lower': { value: lower },
-        'capitalize': { value: capitalize },
-        'dict': { value: dict },
-        'dicti': { value: dicti }
-    });
+    return Object.create(proto, Object.getOwnPropertyNames(pep_trans).reduce(function (p, c) {
+        p[c] = Object.getOwnPropertyDescriptor(pep_trans, c);
+        return p;
+    }, {}));
 };
 
 var toLowerCase = function toLowerCase(x) {
@@ -54,7 +49,7 @@ var standardMapReplace = function standardMapReplace(whole, g1) {
     If a mapping function is provided, the function is invoked with the entire
     string plus the match capture groups as arguments.
 */
-var match = module.exports.match = function () {
+pep_trans.match = function () {
     var cases = [];
     var matcher = function matcher(x) {
         x = '' + x;
@@ -111,8 +106,8 @@ var match = module.exports.match = function () {
     @param target What to replace. Passed to String.prototype.replace
     @param replacer How to replace. Passed to String.prototype.replace
 */
-var replace = module.exports.replace = function (target, replacer) {
-    return match().case(target, function (x) {
+pep_trans.replace = function (target, replacer) {
+    return pep_trans.match().case(target, function (x) {
         return x.replace(target, replacer);
     });
 };
@@ -120,14 +115,14 @@ var replace = module.exports.replace = function (target, replacer) {
 /**
     Convert the result of `g` to upper case.
 */
-var upper = module.exports.upper = function (g) {
+pep_trans.upper = function (g) {
     return pep.map(g, toUpperCase);
 };
 
 /**
     Convert the result of `g` to lower case.
 */
-var lower = module.exports.lower = function (g) {
+pep_trans.lower = function (g) {
     return pep.map(g, toLowerCase);
 };
 
@@ -142,7 +137,7 @@ var lower = module.exports.lower = function (g) {
         pep.run(capitalize(p)) === 'Ab CD Ef';
         pep.run(capitalize(pep.join(p))) === 'Ab Cd Ef';
 */
-var capitalize = module.exports.capitalize = replace(/\b\w/g, toUpperCase);
+pep_trans.capitalize = pep_trans.replace(/\b\w/g, toUpperCase);
 
 /**
     Case sensitive dictionary map function.
@@ -153,7 +148,7 @@ var capitalize = module.exports.capitalize = replace(/\b\w/g, toUpperCase);
     @param dictionary Object mapping string keys to values.
     @param def Default value returned if non match is found
 */
-var dict = module.exports.dict = function (dictionary) {
+pep_trans.dict = function (dictionary) {
     var def = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
 
     var lookup = function lookup(x) {
@@ -169,7 +164,7 @@ var dict = module.exports.dict = function (dictionary) {
     
     @see dict.
 */
-var dicti = module.exports.dicti = function (dictionary) {
+pep_trans.dicti = function (dictionary) {
     var def = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
 
     var lookupTable = Object.keys(dictionary).reduce(function (p, c) {
