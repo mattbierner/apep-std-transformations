@@ -13,7 +13,7 @@ You can either use `apep-std-transformations` as its own include:
 const pep = require('apep');
 const pep_trans = require('apep-std-transformations');
 
-const p = pep_vars.store(...);
+const p = pep_trans.upper(...);
 ```
 
 Or by extending an Apep instance:
