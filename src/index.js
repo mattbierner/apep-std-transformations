@@ -99,6 +99,12 @@ pep_trans.capitalize =
     pep_trans.replace(/\b\w/g, toUpperCase);
 
 /**
+    Capitalize the first word in `g`.
+*/
+pep_trans.capitalizeFirst =
+    pep_trans.replace(/\b\w/, toUpperCase);
+
+/**
     Case sensitive dictionary map function.
     
     Curried because you usually want to save off the mapping

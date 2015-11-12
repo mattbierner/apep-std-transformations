@@ -59,6 +59,10 @@ pep.run(pep_trans.capitalize(p)) === 'Ab CD Ef';
 pep.run(pep_trans.capitalize(pep.join(p))) === 'Ab Cd Ef';
 ```
 
+#### `capitalizeFirst(generator)`
+Capitalize the first word of a generator.
+
+
 #### `dict(map, default = '')(generator)`
 Create a text mapping combinator. 
 
