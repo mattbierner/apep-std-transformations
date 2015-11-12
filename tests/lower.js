@@ -14,7 +14,13 @@ describe('lower', function () {
     it('Should lower case single values.', () => {     
         assert.deepStrictEqual(
             ['a1!pl - b'],
-            Array.from(pep_trans.lower('A1!PL - B')));
+            Array.from(pep_trans.lower(pep.str('A1!PL - B'))));
+    });
+    
+    it('Should wrap non generator values.', () => {     
+        assert.deepStrictEqual(
+            ['ab'],
+            Array.from(pep_trans.lower('AB')));
     });
     
      it('Should lower case all values in a sequence.', () => {     

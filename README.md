@@ -1,26 +1,26 @@
-# Apep-std-vars
+# Apep-std-transformations
 
-Common generators and combinators for working with variables in [Apep Javascript text generation library][apep].
+Common generators and combinators for transforming text in [Apep Javascript text generation library][apep].
 
 ## Usage
-```
-$ npm install apep-std-vars
+```sh
+$ npm install apep-std-transformations
 ```
 
-You can either use `apep-std-vars` as its own include:
+You can either use `apep-std-transformations` as its own include:
 
-```
+```js
 const pep = require('apep');
-const pep_vars = require('apep-std-vars');
+const pep_trans = require('apep-std-transformations');
 
 const p = pep_vars.store(...);
 ```
 
 Or by extending an Apep instance:
 
-```
+```js
 let pep = require('apep');
-pep = require('apep-std-vars')(pep);
+pep = require('apep-std-transformations')(pep);
 
 const p = pep.store(...);
 ```
@@ -29,54 +29,35 @@ Extension does not alter the original Apep include but creates a simple proxy th
 
 ## Documentation
 
-#### `clear(name)`
-Delete a variable.
-
-* `name` - Variable name.
-
-#### `store(name, generator)`
-Get the currently stored value of a variable or compute it with a generator.
-
-* `name` - Variable name.
-* `generator` -  Generator run to produce the value.
+#### `upper(generator)`
+Convert the results of a generator to uppercase.
 
 ```js
-// Make sure we always use the same name after computing it.
-const name = pep_vars.store('name', pep.choice('Alice', 'Bob'))
+const p = pep.upper(pep.seq('foo', 'a1b2c', ' 3d '));
 
-const p = pep.seq(
-    'Affirmative, ', name '. I read you. ',
-    'Im sorry, ', name, ". Im afraid I cant do that.");
-
-p.run() === "Affirmative, Dave. I read you. Im sorry Dave. Im afraid I cant do that."
-p.run() === "Affirmative, Alice. I read you. Im sorry Alice. Im afraid I cant do that."
+Array.from(p) === ['FOO', 'A1B2C', ' 3D '];
 ```
 
-Always stores value as strings. The output of multiple
-yielding generators are joined together into a single string value. `store` yields this combined value as its result.
+#### `lower(generator)`
+Convert the results of a generator to lowercase.
 
 ```js
-const v = pep_vars.store('joined_var',
-    pep.seq(
-        pep.lit(1.2),
-        pep.lit({}),
-        pep.lit(null)));
+const p = pep.upper(pep.seq('FOO', 'A1B2C', ' 3D '));
 
-const p = pep.seq(v, v)
-
-Array.from(p) === ['1.2[Object object]null', '1.2[Object object]null'];
+Array.from(p) === ['foo', 'a1b2c', ' 3d '];
 ```
 
-Use `storeCombined` if you need to store non-string values.
+#### `capitalize(generator)`
+Capitalize the results of a generator.
 
+This is run for each yielded value. Use `pep.join` if you want proper capitalization spanning yielded values:    
 
-#### `storeCombined(f, z, name, generator)`
-Same behavior as store, but combines multiple yielded values with an accumulator function.
+```js    
+const p = pep.seq('ab c', 'd ef');
 
-* `f` - Accumulator function to reduce multiple yields from `generator` to a single value.
-* `z` - Initial value for accumulator.
-* `name` - Variable name.
-* `generator` - Generator run to produce the value.
+pep.run(capitalize(p)) === 'Ab CD Ef';
+pep.run(capitalize(pep.join(p))) === 'Ab Cd Ef';
+```
 
 
 

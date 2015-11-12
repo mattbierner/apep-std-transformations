@@ -14,7 +14,13 @@ describe('upper', function () {
     it('Should upper case single values.', () => {     
         assert.deepStrictEqual(
             ['A1!PL - B'],
-            Array.from(pep_trans.upper('a1!pl - b')));
+            Array.from(pep_trans.upper(pep.str('a1!pl - b'))));
+    });
+    
+    it('Should wrap non generator values.', () => {     
+        assert.deepStrictEqual(
+            ['AB'],
+            Array.from(pep_trans.upper('ab')));
     });
     
      it('Should upper all values in a sequence.', () => {     
